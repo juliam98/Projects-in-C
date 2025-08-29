@@ -4,6 +4,98 @@
 #include <string.h>
 #include <time.h>
 
+const char *hangmanPics[] = {
+"  +---+\n"
+"  |   |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+"  |   |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+" /|   |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+" /|\\  |\n"
+"      |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+" /|\\  |\n"
+"  |   |\n"
+"      |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+" /|\\  |\n"
+"  |   |\n"
+" /    |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  O   |\n"
+" /|\\  |\n"
+"  |   |\n"
+" / \\  |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"  |   |\n"
+"  X   |\n"
+" /|\\  |\n"
+"  |   |\n"
+" / \\  |\n"
+"      |\n"
+"=========\n",
+
+"  +---+\n"
+"      |\n"
+"      |\n"
+" \\O/  |\n"
+"  |   |\n"
+"  |   |\n"
+" / \\  |\n"
+"=========\n"
+};
+
 void decide_on_random_word(char *word, size_t size) {
     // Decide on a random word from a list
     int r = rand() % 9999; // there are 10k words in the file
@@ -19,14 +111,14 @@ void decide_on_random_word(char *word, size_t size) {
     }
     while (len > 0 && (word[len - 1] == '\n' || word[len - 1] == '\r')) {
         word[--len] = '\0';
-}
-
+    }
 }
 
 void init_display(const char *word, char *display) {
     int len = strlen(word);
     for (int i = 0; i < len; i++) display[i] = '_';
     display[len] = '\0';
+    printf("%s", hangmanPics[0]);
 }
 
 void get_letter_positions(const char *word_to_guess, char guess, int *positions, int *count) {
@@ -54,7 +146,7 @@ int main() {
     // Clear the console and initialize display
     printf("\033[2J\033[H");
     init_display(word, display);
-    printf("%s (wrong guesses: %i/10)\r", display, guesses_count);
+    printf("%s %s\r", display, guessed_letters);
     
     while (won==false)
     {
@@ -81,17 +173,20 @@ int main() {
             }
         }
         printf("\033[2J\033[H");
-        printf("%s (wrong guesses: %i/10)\r", display, guesses_count);
-        printf("\n(Letters guessed: %s)", guessed_letters);
-        // printf("\nLetters guessed: %s", guessed_letters);
+        printf("%s", hangmanPics[guesses_count]);
+        printf("%s %s\r", display, guessed_letters);
+        // printf("\n(Letters guessed: %s)", guessed_letters);
         if (strcmp(display, word) == 0) {
             won = true;
+            printf("\033[2J\033[H");
+            printf("%s", hangmanPics[9]);
             printf("Congratulations! You've guessed the word: %s\n", word);
             break;
         }
 
-        if (guesses_count >= 10) {
+        if (guesses_count >= 7) {
             printf("\033[2J\033[H");
+            printf("%s", hangmanPics[8]);
             printf("YOU LOOSE. You have used all your guesses. The word was: %s\n", word);
             break;
         }
